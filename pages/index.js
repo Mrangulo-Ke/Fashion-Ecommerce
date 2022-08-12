@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { useContext } from 'react';
 import { toast } from 'react-toastify';
+//import FeaturedProducts from '../components/FeaturedProducts';
 import Hero from '../components/Hero';
 import Layout from '../components/Layout';
 import ProductItem from '../components/ProductItem';
@@ -8,8 +9,9 @@ import Product from '../models/Product';
 import db from '../utils/db';
 import { Store } from '../utils/Store';
 
-export default function Home({ products }) {
+export default function Home(props) {
   const { state, dispatch } = useContext(Store);
+  const { topRatedProducts, featuredProducts } = props;
 
   const addToCartHandler = async (product) => {
     const existItem = state.cart.cartItems.find((x) => x.slug === product.slug);
@@ -27,9 +29,23 @@ export default function Home({ products }) {
   return (
     <Layout title="Link Masters">
       <Hero />
-      <section id="shop">
+
+      <section id="featured-products">
+        <h1>Featured Products</h1>
         <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
-          {products.map((product) => (
+          {featuredProducts.map((product) => (
+            <ProductItem
+              product={product}
+              key={product.slug}
+              addToCartHandler={addToCartHandler}
+            ></ProductItem>
+          ))}
+        </div>
+      </section>
+      <section id="toprated-products">
+        <h1>Top Rated Products</h1>
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
+          {topRatedProducts.map((product) => (
             <ProductItem
               product={product}
               key={product.slug}
@@ -44,10 +60,20 @@ export default function Home({ products }) {
 
 export async function getServerSideProps() {
   await db.connect();
-  const products = await Product.find().lean();
+
+  const featuredProductsDocs = await Product.find({ isFeatured: true })
+    .lean()
+    .limit(3);
+  const topRatedProductsDocs = await Product.find({}, '-reviews')
+    .lean()
+    .sort({
+      rating: 1,
+    })
+    .limit(3);
   return {
     props: {
-      products: products.map(db.convertDocToObj),
+      featuredProducts: featuredProductsDocs.map(db.convertDocToObj),
+      topRatedProducts: topRatedProductsDocs.map(db.convertDocToObj),
     },
   };
 }

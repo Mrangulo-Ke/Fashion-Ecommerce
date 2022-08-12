@@ -1,38 +1,14 @@
 import axios from 'axios';
+import { useRouter } from 'next/router';
 import { useState } from 'react';
 import styles from '../styles/Add.module.css';
 
 const AddProduct = ({ setClose }) => {
-  //   const [file, setFile] = useState(null);
-  const [name, setName] = useState(null);
-  const [description, setDescription] = useState(null);
-  const [category, setCategory] = useState(null);
-  const [price, setPrice] = useState(null);
-  const [brand, setBrand] = useState(null);
-  const [countInStock, setCountInStock] = useState(null);
-
+  const router = useRouter();
   const createHandler = async () => {
-    const data = new FormData();
-    // data.append('file', file);
-    // data.append('upload_preset', 'uploads');
     try {
-      //   const uploadRes = await axios.post(
-      //     'http://localhost:3000/public/images',
-      //     data
-      //   );
-
-      //   const { url } = uploadRes.data;
-      const newProduct = {
-        name,
-        description,
-        price,
-        category,
-        brand,
-        countInStock,
-        // image: url,
-      };
-
-      await axios.post('http://localhost:3000/api/products', newProduct);
+      const { data } = await axios.post('api/admin/products');
+      router.push(`admin/product/${data.product._id}`);
       setClose(true);
     } catch (err) {
       console.log(err);
