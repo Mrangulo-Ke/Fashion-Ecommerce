@@ -1,7 +1,7 @@
 import axios from 'axios';
+import Link from 'next/link';
 import { useContext } from 'react';
 import { toast } from 'react-toastify';
-//import FeaturedProducts from '../components/FeaturedProducts';
 import Hero from '../components/Hero';
 import Layout from '../components/Layout';
 import ProductItem from '../components/ProductItem';
@@ -41,6 +41,13 @@ export default function Home(props) {
             ></ProductItem>
           ))}
         </div>
+        <div className="flex justify-center md:justify-start">
+          <Link href="/shop">
+            <a className="inline-flex justify-center primary-button">
+              More Products
+            </a>
+          </Link>
+        </div>
       </section>
       <section id="toprated-products">
         <h1>Top Rated Products</h1>
@@ -60,14 +67,13 @@ export default function Home(props) {
 
 export async function getServerSideProps() {
   await db.connect();
-
   const featuredProductsDocs = await Product.find({ isFeatured: true })
     .lean()
     .limit(3);
   const topRatedProductsDocs = await Product.find({}, '-reviews')
     .lean()
     .sort({
-      rating: 1,
+      rating: -1,
     })
     .limit(3);
   return {
