@@ -22,12 +22,15 @@ import {
   LogoutIcon,
   MenuIcon,
   PhoneIcon,
+  SearchIcon,
   ShoppingBagIcon,
   UserIcon,
   XIcon,
 } from '@heroicons/react/solid';
+import { useRouter } from 'next/router';
 
 export default function Layout({ title, children }) {
+  const router = useRouter();
   const { status, data: session } = useSession();
 
   const { state, dispatch } = useContext(Store);
@@ -36,6 +39,15 @@ export default function Layout({ title, children }) {
   useEffect(() => {
     setCartItemsCount(cart.cartItems.reduce((a, c) => a + c.quantity, 0));
   }, [cart.cartItems]);
+
+  const [query, setQuery] = useState('');
+  const queryChangeHandler = (e) => {
+    setQuery(e.target.value);
+  };
+  const submitHandler = (e) => {
+    e.preventDefault();
+    router.push(`/shop?query=${query}`);
+  };
 
   const logoutClickHandler = () => {
     Cookies.remove('cart');
@@ -65,6 +77,16 @@ export default function Layout({ title, children }) {
                 </a>
               </Link>
               <div className="hidden space-x-6 md:flex">
+                <form onSubmit={submitHandler}>
+                  <input
+                    name="query"
+                    placeholder="Search Products"
+                    onChange={queryChangeHandler}
+                  />
+                  <button type="submit" aria-label='="search'>
+                    <SearchIcon />
+                  </button>
+                </form>
                 <Link href="/cart">
                   <a className="">
                     <div className=" p-2 justify-between flex">

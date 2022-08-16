@@ -1,9 +1,9 @@
-import { Listbox, Menu, Transition } from '@headlessui/react';
+import { Listbox, Menu } from '@headlessui/react';
 import { CloudIcon } from '@heroicons/react/solid';
 import axios from 'axios';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { Fragment, useContext } from 'react';
+import React, { Fragment, useContext } from 'react';
 import Layout from '../components/Layout';
 import ProductItem from '../components/ProductItem';
 import Product from '../models/Product';
@@ -28,6 +28,7 @@ const prices = [
 ];
 
 const ratings = [1, 2, 3, 4, 5];
+
 export default function AllProducts(props) {
   const router = useRouter();
   const {
@@ -35,21 +36,15 @@ export default function AllProducts(props) {
     category = 'all',
     brand = 'all',
     price = 'all',
+    rating = 'all',
+    sort = 'featured',
   } = router.query;
   const { state, dispatch } = useContext(Store);
-  const {
-    categoryProducts,
-    brandProducts,
-    products,
-    countProducts,
-    categories,
-    brands,
-  } = props;
+  const { products, countProducts, categories, brands, pages } = props;
 
   const filterSearch = ({
     page,
     category,
-    brand,
     sort,
     min,
     max,
@@ -77,6 +72,22 @@ export default function AllProducts(props) {
   const categoryHandler = (e) => {
     filterSearch({ category: e.target.value });
   };
+  const pageHandler = (e, page) => {
+    filterSearch({ page });
+  };
+  const brandHandler = (e) => {
+    filterSearch({ brand: e.target.value });
+  };
+  const sortHandler = (e) => {
+    filterSearch({ sort: e.target.value });
+  };
+  const priceHandler = (e) => {
+    filterSearch({ price: e.target.value });
+  };
+  const ratingHandler = (e) => {
+    filterSearch({ rating: e.target.value });
+  };
+
   const addToCartHandler = async (product) => {
     const existItem = state.cart.cartItems.find((x) => x.slug === product.slug);
     const quantity = existItem ? existItem.quantity + 1 : 1;
@@ -97,11 +108,19 @@ export default function AllProducts(props) {
             <Listbox value={category} onChange={categoryHandler}>
               <Listbox.Button>Categories</Listbox.Button>
               <Listbox.Options>
-                <Listbox.Option value="all">All</Listbox.Option>
                 {categories &&
                   categories.map((category) => (
-                    <Listbox.Option key={category} value={category}>
-                      {category}
+                    <Listbox.Option
+                      key={category}
+                      value={category}
+                      as={Fragment}
+                    >
+                      {({ selected }) => (
+                        <li className="bg-blue-500 text-white p-1 border border-2">
+                          {selected}
+                          {category}
+                        </li>
+                      )}
                     </Listbox.Option>
                   ))}
               </Listbox.Options>
@@ -109,17 +128,12 @@ export default function AllProducts(props) {
           </div>
           <div className="grid col-span-4">
             <div>
-              {' '}
               {products.length === 0 ? 'No' : countProducts} Results
               {query !== 'all' && query !== '' && ' : ' + query}
               {category !== 'all' && ' : ' + category}
-              {brand !== 'all' && ' : ' + brand}
-              {(query !== 'all' && query !== '') ||
-              category !== 'all' ||
-              brand !== 'all' ||
-              price !== 'all' ? (
+              {(query !== 'all' && query !== '') || category !== 'all' ? (
                 <button onClick={() => router.push('/shop')}>
-                  <CloudIcon />
+                  <CloudIcon className="text-veryDarkBlue" />
                 </button>
               ) : null}
             </div>
@@ -145,25 +159,77 @@ export async function getServerSideProps({ query }) {
   const page = query.page || 1;
   const category = query.category || '';
   const brand = query.brand || '';
+  const price = query.price || '';
+  const rating = query.rating || '';
+  const sort = query.sort || '';
+  const searchQuery = query.query || '';
+
+  const queryFilter =
+    searchQuery && searchQuery !== 'all'
+      ? {
+          name: {
+            $regex: searchQuery,
+            $options: 'i',
+          },
+        }
+      : {};
   const categoryFilter = category && category !== 'all' ? { category } : {};
   const brandFilter = brand && brand !== 'all' ? { brand } : {};
+  const ratingFilter =
+    rating && rating !== 'all'
+      ? {
+          rating: {
+            $gte: Number(rating),
+          },
+        }
+      : {};
+  // 10-50
+  const priceFilter =
+    price && price !== 'all'
+      ? {
+          price: {
+            $gte: Number(price.split('-')[0]),
+            $lte: Number(price.split('-')[1]),
+          },
+        }
+      : {};
+
+  const order =
+    sort === 'featured'
+      ? { featured: -1 }
+      : sort === 'lowest'
+      ? { price: 1 }
+      : sort === 'highest'
+      ? { price: -1 }
+      : sort === 'toprated'
+      ? { rating: -1 }
+      : sort === 'newest'
+      ? { createdAt: -1 }
+      : { _id: -1 };
 
   const categories = await Product.find().distinct('category');
   const brands = await Product.find().distinct('brand');
   const productDocs = await Product.find(
     {
+      ...queryFilter,
       ...categoryFilter,
+      ...priceFilter,
       ...brandFilter,
+      ...ratingFilter,
     },
     '-reviews'
   )
+    .sort(order)
     .skip(pageSize * (page - 1))
     .limit(pageSize)
     .lean();
 
   const countProducts = await Product.countDocuments({
+    ...queryFilter,
     ...categoryFilter,
+    ...priceFilter,
     ...brandFilter,
+    ...ratingFilter,
   });
   await db.disconnect();
 
@@ -171,11 +237,12 @@ export async function getServerSideProps({ query }) {
 
   return {
     props: {
-      countProducts,
       products,
+      countProducts,
+      page,
+      pages: Math.ceil(countProducts / pageSize),
       categories,
       brands,
-      prices,
     },
   };
 }
