@@ -20,6 +20,7 @@ import {
   HomeIcon,
   LoginIcon,
   LogoutIcon,
+  MenuAlt1Icon,
   MenuIcon,
   PhoneIcon,
   SearchIcon,
@@ -69,7 +70,7 @@ export default function Layout({ title, children }) {
 
       <div className="flex min-h-screen flex-col justify-between">
         <header>
-          <nav className="fixed w-full top-0 h-16 z-[100] bg-[#f8fafc] shadow-md">
+          <nav className="fixed w-full top-0 h-24 z-[100] bg-[#f8fafc] shadow-md">
             <div className=" container flex items-center justify-between mx-auto px-4  pt-5">
               <Link href="/">
                 <a>
@@ -77,22 +78,27 @@ export default function Layout({ title, children }) {
                 </a>
               </Link>
               <div className="hidden space-x-6 md:flex">
-                <form onSubmit={submitHandler}>
-                  <input
-                    name="query"
-                    placeholder="Search Products"
-                    onChange={queryChangeHandler}
-                  />
-                  <button type="submit" aria-label='="search'>
-                    <SearchIcon />
-                  </button>
-                </form>
+                <div className="inline-flex pr-2 pb-1 justify-between">
+                  <form onSubmit={submitHandler}>
+                    <input
+                      name="query"
+                      type="text"
+                      placeholder="I'm looking for..."
+                      onChange={queryChangeHandler}
+                    />
+                  </form>
+                  <SearchIcon
+                    onClick={submitHandler}
+                    className="h-8 w-8 pt-2"
+                  ></SearchIcon>
+                </div>
+
                 <Link href="/cart">
                   <a className="">
                     <div className=" p-2 justify-between flex">
                       Cart
                       {cartItemsCount > 0 && (
-                        <span className="ml-1 rounded-full bg-veryDarkViolet px-2 py-1 text-xs font-bold text-white">
+                        <span className="ml-1 rounded-full bg-newRed px-2 py-1 text-xs font-bold text-white">
                           {cartItemsCount}
                         </span>
                       )}
@@ -106,8 +112,13 @@ export default function Layout({ title, children }) {
                   <Menu as="div" className="relative inline-block pt-2">
                     {({ open }) => (
                       <Fragment>
-                        <Menu.Button className="text-veryDarkViolet">
-                          {session.user.name}
+                        <Menu.Button className="text-veryDarkBlue">
+                          <div className="group hover:text-newRed pr-2 pb-1 inline-flex">
+                            {session.user.name}
+                            <span>
+                              <MenuIcon className="h-5 pl-2 "></MenuIcon>
+                            </span>
+                          </div>
                         </Menu.Button>
                         <Transition
                           show={open}
@@ -119,28 +130,21 @@ export default function Layout({ title, children }) {
                           leaveTo="opacity-0 scale-95"
                         >
                           <Menu.Items
-                            className="absolute right-0 w-56 bg-white origin-top-right 
-                          shadow-lg mt-2 rounded-md ring-1 ring-block ring-opacity-5 divide-y divide-gray-100 
+                            className="absolute right-0 w-56 bg-white origin-top-righT justify-end 
+                          shadow-lg mt-12 rounded-md ring-1 ring-block ring-opacity-5 divide-y divide-gray-100 
                           focus:outline-none "
                           >
-                            <NavDropDownLink
-                              className="dropdown-link"
-                              href="/profile"
-                            >
+                            <NavDropDownLink href="/profile">
                               <UserIcon className="h-6 w-6 pr-2"></UserIcon>
                               Profile
                             </NavDropDownLink>
 
-                            <NavDropDownLink
-                              className="dropdown-link"
-                              href="/order-history"
-                            >
+                            <NavDropDownLink href="/order-history">
                               <ArchiveIcon className="h-6 w-6 pr-2"></ArchiveIcon>
                               Order History
                             </NavDropDownLink>
 
                             <NavDropDownLink
-                              className="dropdown-link"
                               href="#"
                               onClick={logoutClickHandler}
                             >
@@ -154,7 +158,10 @@ export default function Layout({ title, children }) {
                   </Menu>
                 ) : (
                   <Link href="/login">
-                    <a className="pt-2">Login</a>
+                    <div className="group hover:text-newRed pt-2 inline-flex">
+                      <a className="">Login</a>
+                      <LoginIcon className="h-6 pl-1 "></LoginIcon>
+                    </div>
                   </Link>
                 )}
               </div>
@@ -260,19 +267,6 @@ export default function Layout({ title, children }) {
                                 Call us
                               </button>
                             </NavDropDownLink>
-                            {/* <div className="px-4 py-2 ">
-                  <button className="flex bg-veryDarkViolet justify-center space-x-4 w-full rounded-md px-4 py-2">
-                    <a href="">
-                      <Image src={Facebook} alt="" className="h-6"></Image>
-                    </a>
-                    <a href="">
-                      <Image src={Instagram} alt="" className="h-6"></Image>
-                    </a>
-                    <a href="">
-                      <Image src={Twitter} alt="" className="h-6"></Image>
-                    </a>
-                  </button>
-                </div> */}
                           </div>
                         </Menu.Items>
                       </Transition>

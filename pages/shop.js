@@ -1,5 +1,5 @@
-import { Listbox, Menu } from '@headlessui/react';
-import { CloudIcon } from '@heroicons/react/solid';
+import { Listbox, Transition } from '@headlessui/react';
+import { ChevronDownIcon, CloudIcon } from '@heroicons/react/solid';
 import axios from 'axios';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -39,12 +39,13 @@ export default function AllProducts(props) {
     rating = 'all',
     sort = 'featured',
   } = router.query;
-  const { state, dispatch } = useContext(Store);
+
   const { products, countProducts, categories, brands, pages } = props;
 
   const filterSearch = ({
     page,
     category,
+    brand,
     sort,
     min,
     max,
@@ -88,6 +89,8 @@ export default function AllProducts(props) {
     filterSearch({ rating: e.target.value });
   };
 
+  const { state, dispatch } = useContext(Store);
+
   const addToCartHandler = async (product) => {
     const existItem = state.cart.cartItems.find((x) => x.slug === product.slug);
     const quantity = existItem ? existItem.quantity + 1 : 1;
@@ -103,39 +106,107 @@ export default function AllProducts(props) {
   return (
     <Layout>
       <section id="all-products">
-        <div className="grid grid-cols-5 pt-36">
+        <div className="grid grid-cols-5 pt-20">
           <div className="grid col-span-1">
-            <Listbox value={category} onChange={categoryHandler}>
-              <Listbox.Button>Categories</Listbox.Button>
-              <Listbox.Options>
-                {categories &&
-                  categories.map((category) => (
-                    <Listbox.Option
-                      key={category}
-                      value={category}
-                      as={Fragment}
-                    >
-                      {({ selected }) => (
-                        <li className="bg-blue-500 text-white p-1 border border-2">
-                          {selected}
-                          {category}
-                        </li>
-                      )}
-                    </Listbox.Option>
+            <ul className="list-none">
+              <li>
+                <h1 className="text-lg">Categories</h1>
+                <select
+                  className="w-full"
+                  value={category}
+                  onChange={categoryHandler}
+                >
+                  <option value="all">All</option>
+                  {categories &&
+                    categories.map((category) => (
+                      <option key={category} value={category}>
+                        {category}
+                      </option>
+                    ))}
+                </select>
+              </li>
+            </ul>
+            <ul className="list-none">
+              <li>
+                <h1 className="text-lg">Brands</h1>
+                <select
+                  className="w-full"
+                  value={brand}
+                  onChange={brandHandler}
+                >
+                  <option value="all">All</option>
+                  {brands &&
+                    brands.map((brand) => (
+                      <option key={brand} value={brand}>
+                        {brand}
+                      </option>
+                    ))}
+                </select>
+              </li>
+            </ul>
+            <ul className="list-none">
+              <li>
+                <h1 className="text-lg">Prices</h1>
+                <select
+                  className="w-full"
+                  value={price}
+                  onChange={priceHandler}
+                >
+                  <option value="all">All</option>
+                  {prices.map((price) => (
+                    <option key={price.value} value={price.value}>
+                      {price.name}
+                    </option>
                   ))}
-              </Listbox.Options>
-            </Listbox>
+                </select>
+              </li>
+            </ul>
+            <ul className="list-none">
+              <li>
+                <h1 className="text-lg">Ratings</h1>
+                <select
+                  className="w-full"
+                  value={rating}
+                  onChange={ratingHandler}
+                >
+                  <option value="all">All</option>
+                  {ratings.map((rating) => (
+                    <option key={rating} value={rating}>
+                      {rating}
+                      <span>&amp; Up</span>
+                    </option>
+                  ))}
+                </select>
+              </li>
+            </ul>
           </div>
           <div className="grid col-span-4">
             <div>
               {products.length === 0 ? 'No' : countProducts} Results
               {query !== 'all' && query !== '' && ' : ' + query}
               {category !== 'all' && ' : ' + category}
-              {(query !== 'all' && query !== '') || category !== 'all' ? (
+              {brand !== 'all' && ' : ' + brand}
+              {price !== 'all' && ' : Price ' + price}
+              {rating !== 'all' && ' : Rating ' + rating + ' & up'}
+              {(query !== 'all' && query !== '') ||
+              category !== 'all' ||
+              brand !== 'all' ||
+              rating !== 'all' ||
+              price !== 'all' ? (
                 <button onClick={() => router.push('/shop')}>
-                  <CloudIcon className="text-veryDarkBlue" />
+                  <CloudIcon className="text-veryDarkBlue h-5 w-5"></CloudIcon>
                 </button>
               ) : null}
+            </div>
+            <div className="flex justify-end">
+              <span>Sort by</span>
+              <select value={sort} onChange={sortHandler}>
+                <option value="featured">Featured</option>
+                <option value="lowest">Price: Low to High</option>
+                <option value="highest">Price: High to Low</option>
+                <option value="toprated">Top Rated</option>
+                <option value="newest">Newe Arrivals</option>
+              </select>
             </div>
             <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
               {products.map((product) => (
@@ -145,6 +216,14 @@ export default function AllProducts(props) {
                   addToCartHandler={addToCartHandler}
                 ></ProductItem>
               ))}
+            </div>
+            <div>
+              {/* <ReactPaginate
+                className="mt-2"
+                defaultPage={parseInt(query.page || '1')}
+                count={pages}
+                onChange={pageHandler}
+              ></ReactPaginate> */}
             </div>
           </div>
         </div>
