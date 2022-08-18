@@ -71,7 +71,7 @@ export default function Layout({ title, children }) {
       <div className="flex min-h-screen flex-col justify-between">
         <header>
           <nav className="fixed w-full top-0 h-24 z-[100] bg-[#f8fafc] shadow-md">
-            <div className=" container flex items-center justify-between mx-auto px-4  pt-5">
+            <div className=" container flex items-center justify-between mx-auto px-4  pt-8">
               <Link href="/">
                 <a>
                   <Image src={Logo} alt=""></Image>
@@ -95,14 +95,16 @@ export default function Layout({ title, children }) {
 
                 <Link href="/cart">
                   <a className="">
-                    <div className=" p-2 justify-between flex">
+                    <div className=" p-2 justify-between flex group hover:text-newRed">
                       Cart
                       {cartItemsCount > 0 && (
                         <span className="ml-1 rounded-full bg-newRed px-2 py-1 text-xs font-bold text-white">
                           {cartItemsCount}
                         </span>
                       )}
-                      <ShoppingBagIcon className="h-5 w-5"></ShoppingBagIcon>
+                      <div className="pl-2">
+                        <ShoppingBagIcon className="h-5 w-5"></ShoppingBagIcon>
+                      </div>
                     </div>
                   </a>
                 </Link>
@@ -171,13 +173,11 @@ export default function Layout({ title, children }) {
                     <Fragment>
                       <Menu.Button
                         className={`${
-                          open
-                            ? 'bg-veryDarkBlue text-white '
-                            : 'bg-veryDarkViolet  text-white '
+                          open ? 'text-veryDarkBlue ' : 'text-veryDarkBlue '
                         }
-          inline-flex rounded-md justify-center w-fullborder shadow-sm text-sm font-medium 
-          py-1 md:hidden
-          `}
+                            inline-flex rounded-md justify-center w-fullborder shadow-sm text-sm font-medium 
+                            py-1 md:hidden mt-4
+                            `}
                       >
                         {open ? (
                           <XIcon className="h-8 w-14"></XIcon>
@@ -195,7 +195,7 @@ export default function Layout({ title, children }) {
                         leaveTo="opacity-0 scale-95"
                       >
                         <Menu.Items
-                          className="flex-col origin-top-right absolute right-0 w-96 bg-white shadow-lg mt-2 
+                          className="flex-col origin-top-right absolute right-0 w-72 bg-white shadow-lg mt-12 
                             rounded-md ring-1 ring-block ring-opacity-5 divide-y divide-gray-100 
                             focus:outline-none md:hidden"
                         >
@@ -257,16 +257,22 @@ export default function Layout({ title, children }) {
                                 </NavDropDownLink>
                               </div>
                             )}
-                            <NavDropDownLink href="+254703352705">
-                              <button
-                                className="inline-flex justify-center w-full rounded-md border border-gray-300 shadow-sm 
-                                px-4 py-2 bg-veryDarkViolet text-sm font-medium text-white hover:bg-gray-50 focus:outline-none 
-                                hover:text-gray-700 focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500"
-                              >
-                                <PhoneIcon className="h-5 w-5 pr-1"></PhoneIcon>
-                                Call us
-                              </button>
-                            </NavDropDownLink>
+
+                            <div className="inline-flex justify-start pb-1">
+                              <form onSubmit={submitHandler}>
+                                <input
+                                  name="query"
+                                  className="w-[250px] pl-4"
+                                  type="text"
+                                  placeholder="I'm looking for..."
+                                  onChange={queryChangeHandler}
+                                />
+                              </form>
+                              <SearchIcon
+                                onClick={submitHandler}
+                                className="h-8 w-8 pt-2"
+                              ></SearchIcon>
+                            </div>
                           </div>
                         </Menu.Items>
                       </Transition>
