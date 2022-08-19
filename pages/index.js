@@ -31,9 +31,11 @@ export default function Home(props) {
       <Hero />
 
       <section id="featured-products">
-        <h1>Featured Products</h1>
+        <h1 className="text-center text-4xl font-semibold mb-10">
+          New Products
+        </h1>
         <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
-          {featuredProducts.map((product) => (
+          {products.map((product) => (
             <ProductItem
               product={product}
               key={product.slug}
