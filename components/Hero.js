@@ -6,11 +6,11 @@ import heroImage from '../public/images/hero.png';
 
 export default function Hero() {
   return (
-    <div className="container min-h-screen flex flex-col-reverse md:flex-row items-center px-6 mx-auto mt-24 space-y-0 md:space-y-0">
+    <div className="container min-h-screen flex flex-col-reverse md:flex-row items-center px-6 mx-auto space-y-0 md:space-y-0">
       <div className="flex flex-col mb-32 space-y-12 md:w-1/2 items-center">
         <p
-          className="max-w-md text-3xl font-bold text-center md:text-5xl md:text-left 
-          sm:text-4xl"
+          className="max-w-md text-3xl font-bold text-center md:text-4xl lg:text-5xl md:text-left 
+          mt-4"
         >
           At our shop we don't just sell clothes we give you a lifestyle.
         </p>
