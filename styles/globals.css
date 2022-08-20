@@ -17,6 +17,9 @@ html {
 * {
   box-sizing: border-box;
 }
+.main {
+  @apply container m-auto mt-4 px-4;
+}
 
 .card {
   @apply mb-5  block   rounded-lg border border-gray-200  shadow-md items-center;
@@ -39,7 +42,6 @@ html {
 }
 
 input,
-select,
 textarea {
   @apply rounded border p-2  outline-none ring-indigo-300  focus:ring;
 }
@@ -50,4 +52,13 @@ textarea {
 
 .alert-success {
   @apply my-3 rounded-lg bg-green-100 p-3 text-green-700;
+}
+#top__banner {
+  background: linear-gradient(#212245b2, #212245b2),
+    url('../public/images/banner2.jpg');
+
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  padding: 80px 0px;
 }

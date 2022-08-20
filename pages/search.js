@@ -1,16 +1,15 @@
-import { Listbox, Transition } from '@headlessui/react';
-import { ChevronDownIcon, CloudIcon } from '@heroicons/react/solid';
+import { XIcon } from '@heroicons/react/solid';
 import axios from 'axios';
-import Link from 'next/link';
+import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
-import React, { Fragment, useContext } from 'react';
+import React, { useContext } from 'react';
 import Layout from '../components/Layout';
 import ProductItem from '../components/ProductItem';
 import Product from '../models/Product';
 import db from '../utils/db';
 import { Store } from '../utils/Store';
 
-const PAGE_SIZE = 3;
+const PAGE_SIZE = 6;
 
 const prices = [
   {
@@ -29,7 +28,7 @@ const prices = [
 
 const ratings = [1, 2, 3, 4, 5];
 
-export default function AllProducts(props) {
+function Search(props) {
   const router = useRouter();
   const {
     query = 'all',
@@ -105,110 +104,118 @@ export default function AllProducts(props) {
   };
   return (
     <Layout>
-      <section id="all-products">
-        <div className="grid grid-cols-5 pt-20">
-          <div className="grid col-span-1">
-            <ul className="list-none">
-              <li>
-                <h1 className="text-lg">Categories</h1>
-                <select
-                  className="w-full"
-                  value={category}
-                  onChange={categoryHandler}
-                >
-                  <option value="all">All</option>
-                  {categories &&
-                    categories.map((category) => (
-                      <option key={category} value={category}>
-                        {category}
+      <section id="top__banner" className="mt-20">
+        <div className="container m-auto mt-4 px-4">
+          <h2 className="text-white text-3xl md:text-4xl">All Products</h2>
+        </div>
+      </section>
+      <section id="all-products" className="main">
+        <div className="md:grid md:grid-cols-5 flex-row">
+          <div className="md:grid md:col-span-1 mt-16 flex">
+            <div className="">
+              <ul className="list-none px-2 pb-4">
+                <li>
+                  <select
+                    className="rounded border-[1px] p-2 outline-none w-full border-[#fde4e4]"
+                    value={category}
+                    onChange={categoryHandler}
+                  >
+                    <option value="all">Categories</option>
+                    {categories &&
+                      categories.map((category) => (
+                        <option key={category} value={category}>
+                          {category}
+                        </option>
+                      ))}
+                  </select>
+                </li>
+              </ul>
+              <ul className="list-none px-2 py-4">
+                <li>
+                  <select
+                    className="rounded border-[1px] p-2 outline-none w-full border-[#fde4e4]"
+                    value={brand}
+                    onChange={brandHandler}
+                  >
+                    <option value="all">Brands</option>
+                    {brands &&
+                      brands.map((brand) => (
+                        <option key={brand} value={brand}>
+                          {brand}
+                        </option>
+                      ))}
+                  </select>
+                </li>
+              </ul>
+              <ul className="list-none px-2 py-4">
+                <li>
+                  <select
+                    className="rounded border-[1px] p-2 outline-none w-full border-[#fde4e4]"
+                    value={price}
+                    onChange={priceHandler}
+                  >
+                    <option value="all">Prices</option>
+                    {prices.map((price) => (
+                      <option key={price.value} value={price.value}>
+                        {price.name}
                       </option>
                     ))}
-                </select>
-              </li>
-            </ul>
-            <ul className="list-none">
-              <li>
-                <h1 className="text-lg">Brands</h1>
-                <select
-                  className="w-full"
-                  value={brand}
-                  onChange={brandHandler}
-                >
-                  <option value="all">All</option>
-                  {brands &&
-                    brands.map((brand) => (
-                      <option key={brand} value={brand}>
-                        {brand}
+                  </select>
+                </li>
+              </ul>
+              <ul className="list-none px-2 py-4">
+                <li>
+                  <select
+                    className="rounded border-[1px] p-2 outline-none w-full border-[#fde4e4]"
+                    value={rating}
+                    onChange={ratingHandler}
+                  >
+                    <option value="all">Ratings</option>
+                    {ratings.map((rating) => (
+                      <option key={rating} value={rating}>
+                        {rating}
+                        <span>&amp; Up</span>
                       </option>
                     ))}
-                </select>
-              </li>
-            </ul>
-            <ul className="list-none">
-              <li>
-                <h1 className="text-lg">Prices</h1>
-                <select
-                  className="w-full"
-                  value={price}
-                  onChange={priceHandler}
-                >
-                  <option value="all">All</option>
-                  {prices.map((price) => (
-                    <option key={price.value} value={price.value}>
-                      {price.name}
-                    </option>
-                  ))}
-                </select>
-              </li>
-            </ul>
-            <ul className="list-none">
-              <li>
-                <h1 className="text-lg">Ratings</h1>
-                <select
-                  className="w-full"
-                  value={rating}
-                  onChange={ratingHandler}
-                >
-                  <option value="all">All</option>
-                  {ratings.map((rating) => (
-                    <option key={rating} value={rating}>
-                      {rating}
-                      <span>&amp; Up</span>
-                    </option>
-                  ))}
-                </select>
-              </li>
-            </ul>
+                  </select>
+                </li>
+              </ul>
+            </div>
           </div>
-          <div className="grid col-span-4">
-            <div>
-              {products.length === 0 ? 'No' : countProducts} Results
-              {query !== 'all' && query !== '' && ' : ' + query}
-              {category !== 'all' && ' : ' + category}
-              {brand !== 'all' && ' : ' + brand}
-              {price !== 'all' && ' : Price ' + price}
-              {rating !== 'all' && ' : Rating ' + rating + ' & up'}
-              {(query !== 'all' && query !== '') ||
-              category !== 'all' ||
-              brand !== 'all' ||
-              rating !== 'all' ||
-              price !== 'all' ? (
-                <button onClick={() => router.push('/shop')}>
-                  <CloudIcon className="text-veryDarkBlue h-5 w-5"></CloudIcon>
-                </button>
-              ) : null}
+          <div className="md:grid md:col-span-4 flex-row">
+            <div className="md:flex justify-between mb-6">
+              <div className="items-center flex text-lg pl-4">
+                {products.length === 0 ? 'No' : countProducts} Results
+                {query !== 'all' && query !== '' && ' : ' + query}
+                {category !== 'all' && ' : ' + category}
+                {brand !== 'all' && ' : ' + brand}
+                {price !== 'all' && ' : Price ' + price}
+                {rating !== 'all' && ' : Rating ' + rating + ' & up'}
+                {(query !== 'all' && query !== '') ||
+                category !== 'all' ||
+                brand !== 'all' ||
+                rating !== 'all' ||
+                price !== 'all' ? (
+                  <button onClick={() => router.push('/search')}>
+                    <XIcon className="text-newRed h-5 w-5"></XIcon>
+                  </button>
+                ) : null}
+              </div>
+              <div className="flex justify-end items-center">
+                <select
+                  value={sort}
+                  onChange={sortHandler}
+                  className="rounded border-[1px] p-2 outline-none w-48 border-[#fde4e4]"
+                >
+                  <option value="featured">Featured</option>
+                  <option value="lowest">Price: Low to High</option>
+                  <option value="highest">Price: High to Low</option>
+                  <option value="toprated">Top Rated</option>
+                  <option value="newest">New Arrivals</option>
+                </select>
+              </div>
             </div>
-            <div className="flex justify-end">
-              <span>Sort by</span>
-              <select value={sort} onChange={sortHandler}>
-                <option value="featured">Featured</option>
-                <option value="lowest">Price: Low to High</option>
-                <option value="highest">Price: High to Low</option>
-                <option value="toprated">Top Rated</option>
-                <option value="newest">Newe Arrivals</option>
-              </select>
-            </div>
-            <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
+            <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
               {products.map((product) => (
                 <ProductItem
                   product={product}
@@ -325,3 +332,5 @@ export async function getServerSideProps({ query }) {
     },
   };
 }
+
+export default dynamic(() => Promise.resolve(Search), { ssr: false });

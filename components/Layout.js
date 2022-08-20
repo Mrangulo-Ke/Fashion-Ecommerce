@@ -11,7 +11,6 @@ import { NavDropDownLink } from './NavDropDownLink';
 import Image from 'next/image';
 
 import Logo from '../public/images/logoblack.svg';
-import LogoWhite from '../public/images/logowhite.svg';
 import Facebook from '../public/images/icon-facebook.svg';
 import Instagram from '../public/images/icon-instagram.svg';
 import Twitter from '../public/images/icon-twitter.svg';
@@ -20,9 +19,7 @@ import {
   HomeIcon,
   LoginIcon,
   LogoutIcon,
-  MenuAlt1Icon,
   MenuIcon,
-  PhoneIcon,
   SearchIcon,
   ShoppingBagIcon,
   UserIcon,
@@ -47,7 +44,7 @@ export default function Layout({ title, children }) {
   };
   const submitHandler = (e) => {
     e.preventDefault();
-    router.push(`/shop?query=${query}`);
+    router.push(`/search?query=${query}`);
   };
 
   const logoutClickHandler = () => {
@@ -283,17 +280,19 @@ export default function Layout({ title, children }) {
             </div>
           </nav>
         </header>
-        <main className="container m-auto mt-4 px-4">{children}</main>
+        <main>{children}</main>
 
-        <footer className=" bg-veryDarkBlue">
+        <footer className="bg-[#fde4e4]">
           <div className="container flex flex-col-reverse justify-between px-6 py-10 mx-auto space-y-8 md:flex-row md:space-y-0">
             <div className="flex flex-col-reverse items-center justify-between space-y-12 md:flex-col md:space-y-0 md:items-start">
-              <div className="mx-auto my-6 text-center text-white text-xs md:hidden">
-                Copyright &copy; {new Date().getFullYear()} Link Masters by
-                Mwangeka Mrangulo. All Rights Reserved.
+              <div className="mx-auto my-6 text-center text-newRed text-sm md:hidden">
+                Copyright &copy; {new Date().getFullYear()} by Mwangeka
+                Mrangulo. All Rights Reserved.
               </div>
               <div>
-                <Image src={LogoWhite} alt="" className="h-10"></Image>
+                <Link href="/">
+                  <Image src={Logo} alt="" className="h-10"></Image>
+                </Link>
               </div>
 
               <div className="flex justify-center space-x-4">
@@ -318,24 +317,17 @@ export default function Layout({ title, children }) {
             </div>
 
             <div className="flex justify-around space-x-32">
-              <div className="flex flex-col space-y-3 text-white text-xs md:text-sm">
+              <div className="flex flex-col space-y-3  text-sm">
                 <Link href="/">
-                  <a className="hover:text-brightRed">Home</a>
+                  <a className="hover:text-newRed text-veryDarkBlue">Home</a>
                 </Link>
-                <Link href="/#services">
-                  <a className="hover:text-brightRed">Pc Services</a>
-                </Link>
-                <Link href="/#services">
-                  <a className="hover:text-brightRed">Phone Services</a>
-                </Link>
-                <Link href="/#other-services">
-                  <a className="hover:text-brightRed">Other Services</a>
-                </Link>
-                <Link href="/#supplies">
-                  <a className="hover:text-brightRed">Supplies</a>
+                <Link href="/">
+                  <a className="hover:text-newRed text-veryDarkBlue">
+                    All Products
+                  </a>
                 </Link>
               </div>
-              <div className="flex flex-col space-y-3 text-white text-xs md:text-sm">
+              <div className="flex flex-col space-y-3 text-veryDarkBlue text-sm">
                 <a className="text-">Working Hours</a>
                 <a>Weekdays 7.00am-8.00pm</a>
                 <a>Weekends 8.00am-7.00pm</a>
@@ -345,7 +337,7 @@ export default function Layout({ title, children }) {
           </div>
 
           <div className="justify-center">
-            <div className="hidden text-center text-white text-sm md:block">
+            <div className="hidden text-center text-newRed text-sm md:block">
               {' '}
               Copyright &copy; {new Date().getFullYear()} Link Masters by
               Mwangeka Mrangulo. All Rights Reserved.{' '}

@@ -35,7 +35,7 @@ export default function Home(props) {
     <Layout title="Link Masters">
       <Hero />
 
-      <section id="featured-products">
+      <section id="featured-products" className="main">
         <div className="">
           <h1 className="text-center text-4xl font-semibold mb-10">
             Featured Products
@@ -49,16 +49,9 @@ export default function Home(props) {
               ></ProductItem>
             ))}
           </div>
-          <div className="flex justify-center items-center">
-            <Link href="/shop">
-              <a className="inline-flex justify-center primary-button">
-                More Products
-              </a>
-            </Link>
-          </div>
         </div>
       </section>
-      <section id="why-us">
+      <section id="why-us" className="main">
         <div className="min-h-[75vh] container flex flex-col md:flex-row px-6 mx-auto items-center mt-24 space-y-0 md:space-y-0">
           <div className="w-1/2 flex items-center">
             <Image src={freeDeliverlyImg} alt=""></Image>
