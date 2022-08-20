@@ -40,12 +40,6 @@ html {
 .default-button {
   @apply rounded bg-gray-100 py-2  px-4 text-veryDarkBlue shadow outline-none hover:bg-gray-200  active:bg-gray-300;
 }
-
-input,
-textarea {
-  @apply rounded border p-2  outline-none ring-indigo-300  focus:ring;
-}
-
 .alert-error {
   @apply my-3 rounded-lg bg-red-100 p-3 text-red-700;
 }

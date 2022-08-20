@@ -78,16 +78,18 @@ export default function Layout({ title, children }) {
                 <div className="inline-flex pr-2 pb-1 justify-between">
                   <form onSubmit={submitHandler}>
                     <input
+                      className="rounded border p-2 outline-none ring-lightNewRed focus:ring;"
                       name="query"
                       type="text"
                       placeholder="I'm looking for..."
                       onChange={queryChangeHandler}
-                    />
+                    >
+                      <SearchIcon
+                        onClick={submitHandler}
+                        className="h-8 w-8 pt-2"
+                      ></SearchIcon>
+                    </input>
                   </form>
-                  <SearchIcon
-                    onClick={submitHandler}
-                    className="h-8 w-8 pt-2"
-                  ></SearchIcon>
                 </div>
 
                 <Link href="/cart">
@@ -282,7 +284,7 @@ export default function Layout({ title, children }) {
         </header>
         <main>{children}</main>
 
-        <footer className="bg-[#fde4e4]">
+        <footer className="bg-lightNewRed">
           <div className="container flex flex-col-reverse justify-between px-6 py-10 mx-auto space-y-8 md:flex-row md:space-y-0">
             <div className="flex flex-col-reverse items-center justify-between space-y-12 md:flex-col md:space-y-0 md:items-start">
               <div className="mx-auto my-6 text-center text-newRed text-sm md:hidden">
