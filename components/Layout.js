@@ -83,12 +83,11 @@ export default function Layout({ title, children }) {
                       type="text"
                       placeholder="I'm looking for..."
                       onChange={queryChangeHandler}
-                    >
-                      <SearchIcon
-                        onClick={submitHandler}
-                        className="h-8 w-8 pt-2"
-                      ></SearchIcon>
-                    </input>
+                    />
+                    {/* <SearchIcon
+                      onClick={submitHandler}
+                      className="h-8 w-8 pt-2"
+                    ></SearchIcon> */}
                   </form>
                 </div>
 

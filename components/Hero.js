@@ -2,7 +2,7 @@ import { ChevronRightIcon } from '@heroicons/react/solid';
 import Image from 'next/image';
 import Link from 'next/link';
 
-import heroImage from '../public/images/hero.png';
+import heroImage from '../public/images/shirt1.jpg';
 
 export default function Hero() {
   return (
